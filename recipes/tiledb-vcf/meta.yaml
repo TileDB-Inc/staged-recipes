@@ -1,0 +1,75 @@
+{% set name = "tiledb" %}
+{% set version = "0.2.3" %}
+{% set sha256 = "a947f506e8ae5063f22270ab5b205a07c78d41527b594c5278684ada1c57da88" %}
+
+package:
+  name: tiledb-vcf
+  version: {{ version }}
+
+source:
+  fn: {{ name }}-{{ version }}.tar.gz
+  git_url: https://github.com/TileDB-Inc/TileDB-VCF
+  git_rev: master
+  #url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  #sha256: {{ sha256 }}
+
+build:
+  number: 0
+  skip: true  # [win or linux32 or py2k]
+
+requirements:
+  build:
+    - {{ compiler('cxx') }}
+  host:
+    - tiledb >=1.7
+  run:
+    - python
+    - setuptools
+    - {{ pin_compatible('numpy') }}
+    - tiledb 1.7.*
+
+outputs:
+  - name: libtiledbvcf
+    script: build-libtiledbvcf.sh
+    requirements:
+      build:
+        - {{ compiler('cxx') }}
+        - git
+        - cmake
+        - make
+      host:
+        - htslib >=1.8
+        - tiledb >=1.7
+
+  - name: tiledbvcf-py
+    script: build-tiledbvcf-py.sh
+    requirements:
+      - python
+      - wheel
+      - setuptools
+      - setuptools_scm
+      - pybind11
+      - numpy
+      - pip
+      - pyarrow >=0.16
+    imports:
+      - tiledbvcf
+    test:
+      - python -c "import tiledbvcf"
+      - pytest
+
+about:
+  home: http://tiledb.com
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: 'Efficient variant-call data storage and retrieval library using the TileDB storage library.'
+  description: |
+    TileDB-VCF is the python interface to the TileDB-VCF library.
+  doc_url: https://docs.tiledb.com/developer/tiledbvcf/introduction
+  dev_url: https://github.com/TileDB-Inc/TileDB-VCF
+
+extra:
+  recipe-maintainers:
+    - ihnorton
+    - shelnutt2
