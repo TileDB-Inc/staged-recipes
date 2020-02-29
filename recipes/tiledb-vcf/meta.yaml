@@ -1,15 +1,15 @@
-{% set name = "tiledb" %}
+{% set name = "tiledb-vcf" %}
 {% set version = "0.2.3" %}
 {% set sha256 = "a947f506e8ae5063f22270ab5b205a07c78d41527b594c5278684ada1c57da88" %}
 
 package:
-  name: tiledb-vcf
+  name: {{ name }}
   version: {{ version }}
 
 source:
-  fn: {{ name }}-{{ version }}.tar.gz
-  git_url: https://github.com/TileDB-Inc/TileDB-VCF
+  git_url: https://github.com/TileDB-Inc/TileDB-VCF.git
   git_rev: master
+  #fn: {{ name }}-{{ version }}.tar.gz
   #url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
   #sha256: {{ sha256 }}
 
@@ -19,44 +19,57 @@ build:
 
 requirements:
   build:
+    - {{ compiler('c') }}
     - {{ compiler('cxx') }}
-  host:
-    - tiledb >=1.7
+    - git
+    - cmake
+    - make
   run:
-    - python
-    - setuptools
-    - {{ pin_compatible('numpy') }}
-    - tiledb 1.7.*
+    - htslib >=1.8
+    - tiledb 1.7.5
+  host:
+    - htslib >=1.8
+    - tiledb 1.7.5
 
 outputs:
   - name: libtiledbvcf
-    script: build-libtiledbvcf.sh
+    script: install-libtiledbvcf.sh
     requirements:
       build:
+        - {{ compiler('c') }}
         - {{ compiler('cxx') }}
-        - git
         - cmake
         - make
       host:
         - htslib >=1.8
-        - tiledb >=1.7
+        - tiledb 1.7.5
+      run:
+        - htslib >=1.8
+        - tiledb 1.7.5
 
   - name: tiledbvcf-py
     script: build-tiledbvcf-py.sh
     requirements:
-      - python
-      - wheel
-      - setuptools
-      - setuptools_scm
-      - pybind11
-      - numpy
-      - pip
-      - pyarrow >=0.16
+      host:
+        #- {{ pin_subpackage('libtiledbvcf', exact=True) }}
+        - libtiledbvcf
+        - python
+        - numpy >=1.16.*
+        - pyarrow >=0.16
+        - pybind11
+      run:
+        #- {{ pin_subpackage('libtiledbvcf', exact=True) }}
+        #- {{ pin_compatible('numpy', lower_bound='1.16') }}
+        - libtiledbvcf
+        - python
+        - numpy >=1.16.*
+        - pyarrow >=0.16
+        - pybind11
     imports:
       - tiledbvcf
     test:
-      - python -c "import tiledbvcf"
-      - pytest
+      commands:
+        - python -c "import tiledbvcf"
 
 about:
   home: http://tiledb.com
