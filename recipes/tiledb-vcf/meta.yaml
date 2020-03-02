@@ -35,6 +35,7 @@ requirements:
 
 outputs:
   - name: libtiledbvcf
+    version: {{ version }}
     script: install-libtiledbvcf.sh
     requirements:
       build:
@@ -50,6 +51,7 @@ outputs:
         - tiledb 1.7.5
 
   - name: tiledbvcf-py
+    version: {{ version }}
     script: build-tiledbvcf-py.sh
     requirements:
       build:
@@ -57,19 +59,18 @@ outputs:
         - {{ compiler('cxx') }}
         - cmake
         - make
+        - setuptools
+        - wheel
       host:
-        #- {{ pin_subpackage('libtiledbvcf', exact=True) }}
-        - libtiledbvcf
+        - {{ pin_compatible('numpy', lower_bound='1.16') }}
+        - {{ pin_subpackage('libtiledbvcf', exact=True) }}
         - python
-        - numpy >=1.16.*
         - pyarrow >=0.16.*
         - pybind11
       run:
-        #- {{ pin_subpackage('libtiledbvcf', exact=True) }}
-        #- {{ pin_compatible('numpy', lower_bound='1.16') }}
-        - libtiledbvcf
+        - {{ pin_compatible('numpy', lower_bound='1.16') }}
+        - {{ pin_subpackage('libtiledbvcf', exact=True) }}
         - python
-        - numpy >=1.16.*
         - pyarrow >=0.16.*
         - pybind11
     imports:
