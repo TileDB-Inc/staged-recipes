@@ -52,6 +52,11 @@ outputs:
   - name: tiledbvcf-py
     script: build-tiledbvcf-py.sh
     requirements:
+      build:
+        - {{ compiler('c') }}
+        - {{ compiler('cxx') }}
+        - cmake
+        - make
       host:
         #- {{ pin_subpackage('libtiledbvcf', exact=True) }}
         - libtiledbvcf
