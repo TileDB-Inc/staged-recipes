@@ -7,8 +7,10 @@ package:
   version: {{ version }}
 
 source:
-  git_url: https://github.com/TileDB-Inc/TileDB-VCF.git
-  git_rev: master
+  git_url: /home/ec2-user/git/TileDB-VCF
+  git_rev: "ihn/conda"
+  #git_url: https://github.com/TileDB-Inc/TileDB-VCF.git
+  #git_rev: master
   #fn: {{ name }}-{{ version }}.tar.gz
   #url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
   #sha256: {{ sha256 }}
@@ -55,7 +57,7 @@ outputs:
         - libtiledbvcf
         - python
         - numpy >=1.16.*
-        - pyarrow >=0.16
+        - pyarrow >=0.16.*
         - pybind11
       run:
         #- {{ pin_subpackage('libtiledbvcf', exact=True) }}
@@ -63,7 +65,7 @@ outputs:
         - libtiledbvcf
         - python
         - numpy >=1.16.*
-        - pyarrow >=0.16
+        - pyarrow >=0.16.*
         - pybind11
     imports:
       - tiledbvcf
