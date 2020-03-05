@@ -1,19 +1,18 @@
 {% set name = "tiledb-vcf" %}
-{% set version = "0.2.3" %}
-{% set sha256 = "a947f506e8ae5063f22270ab5b205a07c78d41527b594c5278684ada1c57da88" %}
+{% set version = "0.3.1" %}
+{% set sha256 = "6a572c9b4264da62fbbdf44daba7589c930fdc531991a2d254b019ed3a255124" %}
 
 package:
   name: {{ name }}
   version: {{ version }}
 
 source:
-  git_url: /home/ec2-user/git/TileDB-VCF
-  git_rev: "ihn/conda"
   #git_url: https://github.com/TileDB-Inc/TileDB-VCF.git
-  #git_rev: master
+  #git_rev: {{ version }}
   #fn: {{ name }}-{{ version }}.tar.gz
   #url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  #sha256: {{ sha256 }}
+  url: https://github.com/TileDB-Inc/TileDB-VCF/archive/0.3.1.tar.gz
+  sha256: {{ sha256 }}
 
 build:
   number: 0
@@ -67,6 +66,7 @@ outputs:
         - python
         - pyarrow >=0.16.*
         - pybind11
+        - rpdb
       run:
         - {{ pin_compatible('numpy', lower_bound='1.16') }}
         - {{ pin_subpackage('libtiledbvcf', exact=True) }}
